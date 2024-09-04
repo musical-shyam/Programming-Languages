@@ -1,0 +1,124 @@
+Please submit written answers in a single text file, with the extension .txt.  Code should be submitted as separate file(s) with appropriate extensions.
+
+Some questions might not have a solution.  If a question does not have a solution, briefly explain why.
+
+Remember to list everyone you discuss this homework with, including the professor and TA.  Conversations must be briefly summarized.  If you did not discuss the homework with anyone, you must also state this.
+
+1) Please read the syllabus (posted on Brightspace) if you have not already done so. Include the following sentence at the top of your homework:
+    "I have read the Course Syllabus for CS 471, Programming Languages."
+
+2) True or False: some programming languages are more "powerful" then others.  Explain your answer.
+
+3) Write regular expressions over the vocabulary { 0, 1 } for each of the following:
+    a) All strings which, when interpreted as binary numbers, represent all non-negative numbers divisible by 4.
+    b) All strings consisting of two-or-more 1's followed by a non-empty sequence of 0's.
+    c) All strings containing the substring 101, and ending in a 1.
+    d) All strings consisting of n 0's, followed by 2n 1's (where n is an arbitrary non-negative integer.)
+
+Your answers should be written using the regex syntax presented in class.
+
+4) Given the following grammar for regular expressions over the vocabulary { 0, 1 }:
+    re := re re
+        | re '|' re                    (Alteration)
+        | re '*'
+        | ( re )
+        | 0
+        | 1
+
+    a) A leftmost derivation is a derivation in which the leftmost non-terminal is expanded at each step.  Show a leftmost derivation for the regex 01|1*.
+    b) Show that the grammar is ambiguous.
+
+5) Consider the grammar:
+    expr := expr @ term
+          | term
+    term := A
+          | B
+          | C
+
+    a) Why can this not be directly used in a recursive-descent parser?  What would go wrong if it is?
+    b) Suppose your friend suggested rewriting the production rule as:
+            expr := term @ expr
+        to avoid the problem you identified in (a).  Is this a satisfactory way of converting the grammar for use in a recursive-descent parser?  Explain your answer.
+
+6) Provide a CFG for basic regular expressions over the vocabulary { 0, 1 } with the usual regex notation of left-associative juxtaposition used for concatenation, left-associative infix | used for alternation, and postfix unary * used for Kleene closure. The operators should have the usual precedence. The grammar should allow the use of parentheses in the usual fashion to override the default associativity and precedence.
+
+Your CFG should enforce the associativity and precedence of the operators.
+
+7) Transform your grammar from the previous question to be suitable for recursive-descent parsing. Provide pseudo-code for a recursive-descent recognizer for this transformed grammar.
+
+8) Examine arith1.c: It contains an implementation of a simple arithmetic calculator. The following will compile and run a few test cases. 
+
+    make arith1
+    ./arith1
+    1 + 2 + 3
+    ./arith1 
+    1 + 2 * 3
+
+The arith1 language is parsed used a recursive-descent parser: It is fairly straightforward to determine the language's grammar from the parser. 
+
+    a) Using the code, give the complete grammar in BNF form 
+    
+    b) Is the grammar left or right recursive? How does that affect the associativity of plus and mult? 
+    
+    c) Using the grammar you found in (a) add two new operators,  divide, "/",  and minus, "-" , operators to the arith1 language .  The "-" should have the a higher precedence than "+" and lower precedence than "*".  The divide operator, "/", should have the higher precedence than "*" but still be able to be overridden using parentheses as defined by the grammar. Both operators should have the same associativity as plus and times.
+    
+    Give the modified grammar. 
+
+    d) Modify arith1.c and add the new operator that you defined in (c). Pay careful attention to the pattern between the original grammar and the associated function calls in arith1.c. If you have properly adjusted the grammar, it should be a straightforward modification of the original functions with the additional of a couple new function for the new operator.  Divide should round toward 0.
+
+    You should pay careful attention to how expressions evaluate; a compile and a correct evaluation of some expressions does not mean you have modified everything correctly. Try the sample cases below.  
+
+        ./arith1 
+        1 + 2 - 2 
+        The result is: 1
+
+        ./arith1
+        2 - 3 * 5
+        The result is: -13
+
+        ./arith1 
+        5 / 2
+        The result is: 2
+
+        ./arith1 
+        10 - 7 - 2
+        The result is:   5
+
+        ./arith1 
+        10 - 5 / 2
+        The result is:   8
+
+9) Examine arith2.c: It contains another implementation of a simple arithmetic calculator. The following will compile and run a few test cases.  
+
+    make arith2 
+    ./arith2 
+    1 + 2 * 3 
+    ./arith2 
+    1 + 2 + 3
+
+The arith2 language is parsed using a slightly different technique, although it is still considered a recursive-descent parser. Pay careful attention to the way while loops are used to parse, instead of pure recursion. Thinking in terms of EBNF (hint: kleene star) may help determine the difference from the previous grammar.
+
+    a) Using the code, give the complete grammar in BNF or EBNF form 
+
+    b - d) Complete (8b) to (8d) again, except with arith2 instead of arith1.
+
+    Try the sample cases below. 
+
+    ./arith 
+    1 + 2 - 2 
+    The result is: 
+    1 
+
+    ./arith 
+    2 - 3 * 5
+    The result is: -13
+
+    ./arith 
+    10 - 5 / 2
+    The result is:
+    8
+
+    ./arith 
+    10 - 7 - 2
+    The result is:
+    1
