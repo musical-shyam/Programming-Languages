@@ -57,6 +57,10 @@ int expr(void) {
     match('+');
     result += expr();
   } 
+  else if (token == '-') {
+    match('-');
+    result -= expr();
+  }
   return result;
 }
 
@@ -65,7 +69,10 @@ int term(void) {
   if (token == '*') {
     match('*');
     result *= term();
-  } 
+  } else if (token == '/') {
+    match('/');
+    result /= term();
+  }
   return result;
 }
 

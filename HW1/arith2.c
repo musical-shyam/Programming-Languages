@@ -55,6 +55,10 @@ int expr(void) {
     match('+');
     result += term();
   }
+  while (token == '-') { 
+    match('-');
+    result -= term();
+  }
   return result;
 }
 
@@ -63,6 +67,10 @@ int term(void) {
   while (token == '*') { 
     match('*');
     result *= factor();
+  }
+  while (token == '/') { 
+    match('/');
+    result /= factor();
   }
   return result;
 }
