@@ -1,6 +1,20 @@
 Shyam Kannan - B01037711
 CS 471 - HW1
 
+Discussion List:
+
+Question 2:- Discussed about the perception of word "powerful" with Xinwei and Daniel
+
+Question 3d:- Discussed whether it is possible to write regex for that, with Zhi and Xinwei
+
+Question 5:- Discussed whether all right recursive can be parsed by recursive-descent parser with Xinwei and Zhi
+
+Question 7:- Discussed whether Positive closures can be used in EBNF with Xinwei and Zhi
+
+Question 9:- Discussed how left associative does not necessarily mean right/left recursive.
+
+
+
 1) Please read the syllabus (posted on Brightspace) if you have not already done so. Include the following sentence at the top of your homework:
     
 Ans: "I have read the Course Syllabus for CS 471, Programming Languages."
@@ -25,7 +39,7 @@ c) All strings containing the substring 101, and ending in a 1.
 Ans: (0|1)*(101)(0|1)*1
 
 d) All strings consisting of n 0's, followed by 2n 1's (where n is an arbitrary non-negative integer.)
-Ans: 0^n 1^2n
+Ans: 0^n 1^2n, But this doesn't have regular expression as is not regular. 
 
 
 
@@ -67,7 +81,7 @@ b) Suppose your friend suggested rewriting the production rule as:
             expr := term @ expr
 to avoid the problem you identified in (a). Is this a satisfactory way of converting the grammar for use in a recursive-descent parser?  Explain your answer.
 
-Ans: No
+Ans: Yes, because it is right recursive now, and recursive-descent parser works fine for right recursive grammars as they don't lead a infinite loop. 
 
 
 
@@ -75,22 +89,59 @@ Ans: No
 
 Your CFG should enforce the associativity and precedence of the operators.
 
-Ans: re  := re
-	  | (re)
-	  | re re
-	  | re '|'
-	  | re '*'
-	  | re '+'
-	  | term
-
-     term:= 0
-	  | 1
+Ans: re   ::= re '|' cat | cat
+     cat  ::= cat kle | kle
+     kle  ::= kle '*' | term
+     term ::= '0' | '1' | '(' re ')' 
 	 	
 
 
 7) Transform your grammar from the previous question to be suitable for recursive-descent parsing. Provide pseudo-code for a recursive-descent recognizer for this transformed grammar.
 
-Ans: 
+Ans: re   ::= cat ('|' cat)*
+     cat  ::= kle+
+     kle  ::= term ('*')*
+     term ::= '0' | '1' | '(' re ')'	
+
+
+Pseudocode:
+
+void term(){
+
+if lookahead == '0' {
+        match('0');
+    } else if lookahead == '1' {
+        match('1') ;   
+    }
+      else if lookahead == '('{
+	match('(') ;
+	re();
+	match(')');
+    }
+}
+void kle(){
+
+term();
+while lookahead == '*'{
+    match('*');
+}
+}
+
+void cat(){
+kle();
+while lookahead in ['0', '1', '(']{
+        kle();
+}
+}
+
+void re(){
+cat();
+while lookahead == '|'{
+    match('|');
+    cat();
+}
+}
+
 
 
 8) Examine arith1.c: It contains an implementation of a simple arithmetic calculator. The following will compile and run a few test cases. 
@@ -103,17 +154,40 @@ Ans:
 
 The arith1 language is parsed used a recursive-descent parser: It is fairly straightforward to determine the language's grammar from the parser. 
 
-    a) Using the code, give the complete grammar in BNF form 
-    
-    b) Is the grammar left or right recursive? How does that affect the associativity of plus and mult? 
-    
-    c) Using the grammar you found in (a) add two new operators,  divide, "/",  and minus, "-" , operators to the arith1 language .  The "-" should have the a higher precedence than "+" and lower precedence than "*".  The divide operator, "/", should have the higher precedence than "*" but still be able to be overridden using parentheses as defined by the grammar. Both operators should have the same associativity as plus and times.
-    
-    Give the modified grammar. 
+a) Using the code, give the complete grammar in BNF form 
 
-    d) Modify arith1.c and add the new operator that you defined in (c). Pay careful attention to the pattern between the original grammar and the associated function calls in arith1.c. If you have properly adjusted the grammar, it should be a straightforward modification of the original functions with the additional of a couple new function for the new operator.  Divide should round toward 0.
+Ans: 
 
-    You should pay careful attention to how expressions evaluate; a compile and a correct evaluation of some expressions does not mean you have modified everything correctly. Try the sample cases below.  
+<expr>   ::= <term> '+' <expr> | <term>
+<term>   ::= <factor> '*' <term> | <factor>
+<factor> ::=  '(' <expr> ')' | <number>
+<number> ::= <digit>+
+<digit>  ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'		
+    
+b) Is the grammar left or right recursive? How does that affect the associativity of plus and mult? 
+
+Ans: The grammar is right recursive. Grammar which are right recursive have right associativity. the same similarly applies for left associativity.
+So the associativity of plus and mult for this program is going to be right associative.
+
+   
+c) Using the grammar you found in (a) add two new operators,  divide, "/",  and minus, "-" , operators to the arith1 language .  The "-" should have the a higher precedence than "+" and lower precedence than "*".  The divide operator, "/", should have the higher precedence than "*" but still be able to be overridden using parentheses as defined by the grammar. Both operators should have the same associativity as plus and times.
+
+Give the modified grammar. 
+
+Ans:
+<expr>   ::= <term> '+' <expr> | <term>
+<expr>   ::= <term> '-' <expr> | <term>
+<term>   ::= <factor> '*' <term> | <factor> '/' <term> | <factor>
+<factor> ::= '(' <expr> ')' | <number>
+<number> ::= <digit>+
+<digit>  ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+
+d) Modify arith1.c and add the new operator that you defined in (c). Pay careful attention to the pattern between the original grammar and the associated function calls in arith1.c. If you have properly adjusted the grammar, it should be a straightforward modification of the original functions with the additional of a couple new function for the new operator.  Divide should round toward 0.
+
+You should pay careful attention to how expressions evaluate; a compile and a correct evaluation of some expressions does not mean you have modified everything correctly. 
+
+Try the sample cases below.  
 
         ./arith1 
         1 + 2 - 2 
@@ -147,9 +221,30 @@ The arith1 language is parsed used a recursive-descent parser: It is fairly stra
 
 The arith2 language is parsed using a slightly different technique, although it is still considered a recursive-descent parser. Pay careful attention to the way while loops are used to parse, instead of pure recursion. Thinking in terms of EBNF (hint: kleene star) may help determine the difference from the previous grammar.
 
-    a) Using the code, give the complete grammar in BNF or EBNF form 
+a) Using the code, give the complete grammar in BNF or EBNF form 
 
-    b - d) Complete (8b) to (8d) again, except with arith2 instead of arith1.
+Ans:
+<expr>   ::= <term> '+' <term> | <term>
+<term>   ::= <factor> '*' <factor> | <factor>
+<factor> ::=  '(' <expr> ')' | <number>
+<number> ::= <digit>+
+<digit>  ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+b - d) Complete (8b) to (8d) again, except with arith2 instead of arith1.
+
+Ans:
+
+b) This grammar is not recursive as the variables doesn't call itself in any of production rule. But this is left associative as they run the expression from left to right.
+
+c)
+<expr>   ::= <term> '+' <term> | <term> '-' <term> | <term>
+<term>   ::= <factor> '*' <factor> | <factor> '/' <factor> | <factor>
+<factor> ::=  '(' <expr> ')' | <number>
+<number> ::= <digit>+
+<digit>  ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+d) Done in the code file
+
 
     Try the sample cases below. 
 
