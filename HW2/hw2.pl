@@ -57,7 +57,7 @@ Coding should be done directly in hw2.pl.
 
 /* Homework 2 */
 
-/* Due: Friday, February 9th, 11:59 PM */
+/* Due: Friday, September 11th, 11:59 PM */
 
 /*
 Purpose: To get comfortable with Logic programming, and get a good
