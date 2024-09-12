@@ -48,6 +48,25 @@ interpreter, and then rename it back to hw2.txt in order to submit.
 
 */
 
+/* 
+Collaboration List:
+
+Collaborated with Xinwei on questions 1,2, 12, 13, 14. 
+
+Q1, 2 - Briefly discussed whats the difference between variables and atoms. also discussed about predicate.
+Q12 - Discussed what is meant by subsequence
+Q13 - Discussed on why one helper function isn't enough to solve the question
+Q14 - Briefly discussed on how to integrate bubble sort into the merge sort
+
+Used this resource for 1 and 2 question
+https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse2
+
+Used these resources for 13 and 14 question
+https://staff.fnwi.uva.nl/u.endriss/teaching/pss/slides/pss-sorting-slides.pdf
+
+
+*/
+
 /* Submission */
 
 /*
@@ -235,7 +254,7 @@ NOTE: Don't worry about the error cases: i.e, N greater than the length of Z.  *
 /* Problem 7 Test: */
 
 %:- delete_at(3,[1,2,3,3],2,[1,2,3]).  % SUCCEED
-%:- delete_at(1,[1,1,2,3],0,[1,2,3]).  % SUCCEED
+%:- delete_at(3,[1,2,3,3],2,[1,2,3]).  % SUCCEED
 %:- delete_at(a,[1,a,2,3],1,[1,2,3]).  % SUCCEED
 
 %:- delete_at(1,[1,2,3],0,[1,2,3]) -> fail ; true.    % FAIL
@@ -365,6 +384,19 @@ Hint: It might be helpful to define a helper relation bubble, in addition to bub
 /* Problem 13 Answer: */
 
 
+bubblesort(X,Y):-intermediate(X,[],Y).
+/* Creating intermediate to store the partially sorted list after each iteration
+   storing the intermediate sorted value between each iteration into A
+*/
+intermediate([],A,A).
+intermediate([X|Xs],A,Y):-bubble(X,Xs,Ys,Z),intermediate(Ys,[Z|A],Y).
+
+/* creating bubble to move the next most maximum number to the end   
+*/
+bubble(X,[],[],X).
+bubble(X,[Y|Xs],[Y|Ys],Z):-X>Y,bubble(X,Xs,Ys,Z).
+bubble(X,[Y|Xs],[X|Ys],Z):-X=<Y,bubble(Y,Xs,Ys,Z).
+
 
 /* Problem 14:
 Write a predicate merge(A,B,M) that succeed if the list M has all the items from lists A and B in increasing order.  Items do not need to be unique.
@@ -380,3 +412,8 @@ Hint: You may use predicates defined in previous problems or write helper predic
 %:- merge([3,4],[3],[3]) -> fail ; true.                            % FAIL
 
 /* Problem 14 Answer: */
+merge(X, Y, Z):- bubblesort(X, A), bubblesort(Y, B), merger(A, B, Z).
+merger([], X, X).
+merger(X, [], X).
+merger([X|Xs], [Y|Ys], [X|Z]):- X =< Y, merger(Xs, [Y|Ys], Z).
+merger([X|Xs], [Y|Ys], [Y|Z]):- X > Y, merger([X|Xs], Ys, Z).
