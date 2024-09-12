@@ -11,12 +11,13 @@ This section deals with general submission instructions. Use this source file. Y
 able to code in and run the file in the prolog interpreter directly.
 
 We will be using swipl for our prolog environment:
- To load/reload this file, cd to its directory and run swipl. Then, in the prompt, type [hw2].
+ To load reload this file, cd to its directory and run swipl. Then, in the prompt, type [hw2].
  On the lab computers, you can run swipl by typing `prolog`.
 
 cd PATH_TO_FILE
 prolog
 [hw2].
+
 
 From then on you may execute queries (goals) in the prompt.
 You should provide your answers in the designated spot. Once you have
@@ -77,6 +78,20 @@ horizontal(line(point(_,Y),point(_,Y))).
 
 /* 1. List the clauses, predicates, rules, and facts.
    2. List the atoms, variables, and data structure constructors. */
+/*
+Answer 1a:
+1. 
+Clauses - As clauses are facts and rules that specify some relation between terms, Both vertical(line(point(X,_),point(X,_))). horizontal(line(point(_,Y),point(_,Y))). are clauses
+Predicates - The predicates are vertical and horizontal with 2 arities
+Rules - There are no rules in this knowledge base, as both the clauses are facts without body
+Facts - both vertical(line(point(X,_),point(X,_))). horizontal(line(point(_,Y),point(_,Y))). are facts that say that line is vertical or horizontal if x or y coordinates are same for both points respectively
+2. 
+Atoms - vertical, horizontal, point and line are all atoms as they represent a fixed value
+Variables -  X, Y and _ are variables as they start with a Captial letter or underscore
+Data Structure Constructors - The data structure constructors are line and point 
+*/
+
+
 
 /* Problem 1b:
     Peano arithmetic is a way of writing numerals, which is sometimes used in mathematical logic.
@@ -94,6 +109,19 @@ add(succ(X),Y,succ(Z)) :- add(X,Y,Z).
 
 /* 1. Name the clauses, predicates, rules, and facts.
    2. Name the atoms, variables, and data structure constructors. */
+/*
+Answer 1b:
+1. 
+Clauses - All the 4 lines here,i.e. numeral(0)., numeral(succ(X)) :- numeral(X)., add(0,Y,Y)., add(succ(X),Y,succ(Z)) :- add(X,Y,Z). are clauses
+Predicates - the predicates are numeral and add
+Rules -The rules are numeral(succ(X)) :- numeral(X). and add(succ(X),Y,succ(Z)) :- add(X,Y,Z). as they have a rule head :- body
+Facts - facts are numeral(0). and add(0,Y,Y). as they state something unconditionally true
+2. 
+Atoms - The Atoms are numeral, 0, succ and add.
+Variables - Variables are X, Y, Z
+Data Structure Constructors - the data structure constructor is succ() 
+*/
+
 
 /* Problem 2:
 
@@ -116,6 +144,12 @@ Write definitions for my_first and my_last.
 %:- my_last(1, [3, 2, 1]). % SUCCEED
 %:- my_last(1, [3, 2, 1, 0]) -> fail ; true. % FAIL
 
+/* Problem 2 Answer:  */
+my_first(X, [X|_]).
+my_last(X, [X]).
+my_last(X, [_|Y]) :- my_last(X, Y).
+
+
 /* Problem 3:
  Write a predicate init(All, BLst) that succeeds if Blst has all the items of ALL
  except the last item.  The items in BLst are in the same order as ALL.
@@ -127,6 +161,10 @@ Write definitions for my_first and my_last.
 % :- init([1,2], [1,2]) -> fail ; true.  % FAIL
 % :- init([1,2], [2]) -> fail ; true.  % FAIL
 
+/* Problem 3 Answer: */
+init([_], []).
+init([A|X], [B|Y]) :- A = B, init(X, Y).
+
 /* Problem 4:
 Write a predicate is_decreasing(X) that succeeds if X is a list of decreasing numbers -- Each number is either the same or lower than the preceding number.
 
@@ -134,7 +172,7 @@ NOTE: You may match two elements at a time against a list: [X,Y|Xs] = List. It's
 some_rule([X,Y|Xs]) :- ...
    X is the first element, Y is the second element, Xs is the rest of the list. */
 
-/* Problem 5 Test: */
+/* Problem 4 Test: */
 %:- is_decreasing([]).            % SUCCEED
 %:- is_decreasing([10]).          % SUCCEED
 %:- is_decreasing([10,9]).        % SUCCEED
@@ -147,6 +185,12 @@ some_rule([X,Y|Xs]) :- ...
 %:- is_decreasing([1,2,3]) -> fail ; true.       % FAIL
 %:- is_decreasing([7,19])-> fail ; true.        % FAIL
 
+/* Problem 4 Answer: */
+is_decreasing([]).
+is_decreasing([_]).
+is_decreasing([X, Y|Xs]) :- X>=Y, is_decreasing([Y|Xs]).
+
+
 /* Problem 5:
 Write a predicate element_at(X,Y,N) that succeeds if X is the Nth element of list Y. Y is 0-indexed.
 
@@ -157,6 +201,11 @@ NOTE: Don't worry about the error cases: i.e, N greater than the length of Y.  *
 %:- element_at(1,[1,2,3],0).   % SUCCEED
 
 %:- element_at(1,[1,2,3],1) -> fail ; true.     % FAIL
+
+/* Problem 5 Answer: */
+element_at(X, [X|_], 0).
+element_at(X, [_|Ys], N) :- N> 0, N1 is N - 1, element_at(X, Ys, N1).
+
 
 /* Problem 6:
 Write a predicate insert_at(E,Y,N,Z) that succeeds if Z is the list Y with E inserted at index N -- Insert X at index N in Y.
@@ -172,6 +221,10 @@ insert_at(3,[1,2,3],2,[1,2,3,3]).
 
 %:- insert_at(1,[1,2,3],0,[1,2,3]) -> fail ; true.    % FAIL
 
+/* Problem 6 Answer: */
+insert_at(E, Y, 0, [E|Y]).
+insert_at(E, [Y|Ys], N, [Y|Z]):- N > 0, N1 is N - 1, insert_at(E, Ys, N1, Z) .
+
 
 /* Problem 7 :
 Write a predicate delete_at(E,Y,N,Z) that succeeds if Z is the list Y with E delete at index N -- Delete E at index N in Y.
@@ -186,6 +239,11 @@ NOTE: Don't worry about the error cases: i.e, N greater than the length of Z.  *
 %:- delete_at(a,[1,a,2,3],1,[1,2,3]).  % SUCCEED
 
 %:- delete_at(1,[1,2,3],0,[1,2,3]) -> fail ; true.    % FAIL
+
+/* Problem 7 Answer: */
+delete_at(E, Y, 0, Z):- insert_at(E, Z, 0, Y).
+delete_at(E, [Y|Ys], N, [Y|Z]):- N > 0, N1 is N - 1, delete_at(E, Ys, N1, Z) .
+
 
 /* Problem 8:
 Write a predicate zip(Xs,Ys,Zs) that succeeds if Zs is a list where each element is a tuple, (X,Y), with Xs and Ys paired together.
@@ -204,6 +262,11 @@ NOTE: You may assume X and Y have the same length. */
 %:- zip([1],[2],[(2,3)]) -> fail ; true.               % FAIL
 %:- zip([1],[2,3],[(1,2)]) -> fail ; true.             % FAIL
 
+/* Problem 8 Answer: */
+zip([], [], []).
+zip([X|Xs], [Y|Ys], [(X,Y)|Zs]):- zip(Xs,Ys,Zs).
+
+
 /* Problem 9:
 
 Write a predicate zip2(Xs,Ys,Zs) that succeeds if Zs is a list where each element is a tuple, (X,Y), with Xs and Ys paired together. However, the length of Zs will be equal to the length of Xs or Ys which ever is less.
@@ -221,6 +284,11 @@ zip2([1],[a,b],Zs) should give Zs = [(1,a)] */
 %:- zip2([1],[2],[(2,3)]) -> fail ; true.                 % FAIL
 %:- zip2([1],[a,b],[(1,a),(1,b)]) -> fail ; true.         % FAIL
 
+/* Problem 9 Answer: */
+zip2([], _, []).
+zip2(_, [], []).
+zip2([X|Xs], [Y|Ys], [(X,Y)|Zs]):- zip2(Xs,Ys,Zs).
+
 /* Problem 10:
    See Problem 1b above for the knowledge base used for defining peano numbers.
    Define a predicate greater_than/2 that takes two peano numbers
@@ -231,6 +299,9 @@ zip2([1],[a,b],Zs) should give Zs = [(1,a)] */
 % :- greater_than(succ(succ(succ(0))),succ(0)).        % SUCCEED
 % :- greater_than(succ(succ(0)),succ(succ(succ(0)))) -> fail ; true.  % FAIL
 
+/* Problem 10 Answer: */
+greater_than(succ(_), 0).
+greater_than(succ(X), succ(Y)) :- greater_than(X, Y).
 
 
 /* Problem 11:
@@ -243,13 +314,16 @@ zip2([1],[a,b],Zs) should give Zs = [(1,a)] */
    write a recursive definition for subtract/3.
 */
 
-
 /* Problem 11 Test: */
 % :- subtract(succ(succ(0)), succ(0), succ(0)).       % SUCCEED
 % :- subtract(succ(succ(0)), 0, succ(succ(0))).       % SUCCEED
 % :- subtract(succ(succ(0)), succ(succ(0)), 0).       % SUCCEED
 % :- subtract(succ(succ(0)), 0, 0) -> fail ; true.             % FAIL
 % :- subtract(succ(succ(0)), succ(0), succ(succ(0))) -> fail ; true. % FAIL
+
+/* Problem 11 Answer: */
+
+subtract(Num1,Num2,Result) :- add(Num2, Result, Num1).
 
 /* Problem 12:
  
@@ -267,6 +341,12 @@ has_subseq([a,b,c,d],[b,d]) should succeed, but has_subseq([a,b,c,d],[b,e]) shou
 %:- has_subseq([1,2,3,4],[2,5]) -> fail ; true.     % FAIL
 %:- has_subseq([1,2,3,4],[4,3]) -> fail ; true.     % FAIL
 
+/* Problem 12 Answer: */
+has_subseq(_,[]).
+has_subseq([X|Xs], [X|Ys]):- has_subseq(Xs,Ys).
+has_subseq([_|Xs], Y):- has_subseq(Xs,Y).
+
+
 /* Problem 13:
  
 Write a predicate bubblesort(X,Y) that succeeds if Y is X, sorted from least to greatest.  Items do not need to be unique.
@@ -282,6 +362,10 @@ Hint: It might be helpful to define a helper relation bubble, in addition to bub
 
 %:- bubblesort([4, 3, 2, 1],[1, 2, 4, 3]) -> fail ; true.     % FAIL
 
+/* Problem 13 Answer: */
+
+
+
 /* Problem 14:
 Write a predicate merge(A,B,M) that succeed if the list M has all the items from lists A and B in increasing order.  Items do not need to be unique.
 
@@ -294,3 +378,5 @@ Hint: You may use predicates defined in previous problems or write helper predic
 %:- merge([],[3],[3]).                               % SUCCEED
 
 %:- merge([3,4],[3],[3]) -> fail ; true.                            % FAIL
+
+/* Problem 14 Answer: */
