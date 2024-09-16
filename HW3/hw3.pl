@@ -85,6 +85,21 @@ Purpose: To get comfortable with backtracking, recursion,
    10) f(g(X, Y), h(Y)) = f(g(r(T), 2), Z).
 */
 
+/* Problem 1 Answer:
+   1) (T,T) = (B,C). will unify. In Prolog, unification attempts to make two terms identical by finding a substitution for the variables involved.
+   The Bindings are T=B and B=C. First the left T is bound to B and then right T is bound to C. But as T is already bound to B, B is bound to C.
+   2) (t, t) = (B, C). will unify. The bindings are B = t and C = t. As both B and C didn't have any other bindings they are mapped to left and right t respetively.
+   3) (T, T) = (b, c). will not unify. The left T is first bound to b, but as T is now bound to b, this will not unify as T is also being tried to be mapped with c.
+   4) [H|T] = [1, 2, 3] will unify. The bindings are H = 1 and T = [2, 3].
+   5) [H|T] = [1]. will unify. The bindings are H = 1 and T = [].
+   6) [H|T] = []. will not unify.
+   7) f(1, X) = f(Y, 2). will unify. The bindings are X = 2, Y = 1.
+   8) r(1, X) = f(Y, 2). will not unify.
+   9) r(1, 2) = r(1, 2, X). will not unify.
+   10) f(g(X, Y), h(Y)) = f(g(r(T), 2), Z). will unify. The bindings are X = r(T), Y = 2, Z = h(2).
+
+*/
+
 /* Problem 2:
    (Exercise 3.5 from Learn Prolog Now!)
    Binary trees are trees where all internal nodes have exactly two children.
@@ -107,6 +122,9 @@ Purpose: To get comfortable with backtracking, recursion,
 */
 
 /* Problem 2 Answer: */
+swap(leaf(X), leaf(X)).
+
+swap(tree(X, Y), tree(Y_, X_)):- swap(X, X_), swap(Y, Y_).
 
 /* Problem 2 Test: */
 % :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).
