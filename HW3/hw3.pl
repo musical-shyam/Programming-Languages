@@ -86,16 +86,15 @@ Purpose: To get comfortable with backtracking, recursion,
 */
 
 /* Problem 1 Answer:
-   1) (T,T) = (B,C). will unify. In Prolog, unification attempts to make two terms identical by finding a substitution for the variables involved.
-   The Bindings are T=B and B=C. First the left T is bound to B and then right T is bound to C. But as T is already bound to B, B is bound to C.
+   1) (T,T) = (B,C). will unify. The Bindings are T=B and B=C. First the left T is bound to B and then right T is bound to C. But as T is already bound to B, B is bound to C.
    2) (t, t) = (B, C). will unify. The bindings are B = t and C = t. As both B and C didn't have any other bindings they are mapped to left and right t respetively.
    3) (T, T) = (b, c). will not unify. The left T is first bound to b, but as T is now bound to b, this will not unify as T is also being tried to be mapped with c.
    4) [H|T] = [1, 2, 3] will unify. The bindings are H = 1 and T = [2, 3].
    5) [H|T] = [1]. will unify. The bindings are H = 1 and T = [].
-   6) [H|T] = []. will not unify.
+   6) [H|T] = []. will not unify. An non empty list, cannot be bound to an empty list.
    7) f(1, X) = f(Y, 2). will unify. The bindings are X = 2, Y = 1.
-   8) r(1, X) = f(Y, 2). will not unify.
-   9) r(1, 2) = r(1, 2, X). will not unify.
+   8) r(1, X) = f(Y, 2). will not unify as functors are not the same.
+   9) r(1, 2) = r(1, 2, X). will not unify as the arity is not the same.
    10) f(g(X, Y), h(Y)) = f(g(r(T), 2), Z). will unify. The bindings are X = r(T), Y = 2, Z = h(2).
 
 */
@@ -143,6 +142,7 @@ swap(tree(X, Y), tree(Y_, X_)):- swap(X, X_), swap(Y, Y_).
 /* Problem 3 Answer */
 
 sumlist([], 0).
+sumlist([H|T], Sum) :- sumlist(T, Sum1), Sum is Sum1 + H.
 
 /* Problem 3 Test */
 /* There should be no warnings when compiling,
@@ -163,6 +163,10 @@ sumlist([], 0).
 */
 
 /* Problem 4 Answer */
+
+sumlist2(List, Sum) :- sumlist2(List, 0, Sum).
+sumlist2([], X, X).
+sumlist2([H|T], Psum, Sum) :- Sum1 is Psum + H, sumlist2(T, Sum1, Sum).
 
 
 /* Problem 4 Test */
@@ -187,6 +191,9 @@ sumlist([], 0).
 */
 
 /* Problem 5 Answer */
+
+sumPartialR(1, [1]).
+sumPartialR(N, [H|T]):- N > 1, H is N*(N+1)//2, N1 is N - 1, sumPartialR(N1, T).
 
 
 /* Problem 5 Test */
@@ -223,10 +230,13 @@ edge(f,e).
 
 /* Problem 6 Answer */
 
+outgoing(X, Y):- findall(Z, edge(X, Z), Y).
+incoming(X, Y):- findall(Z, edge(Z, X), Y).
+
 /* Problem 6 Test */
 % :- outgoing(a,X), X = [b,f,c].
 % :- outgoing(e,X), X = [].
-% :- incoming(a,X), X = [b].
+% :- incoming(a,X), X = [b]..
 % :- incoming(f,X), X = [a].
 
 % :- outgoing(e,X), X = [a] -> fail ; true.
@@ -254,6 +264,15 @@ edge(f,e).
 */
 
 /* Problem 7 Answer: */
+d(x, 1):- !.
+d(C, 0):- number(C), !.
+d(C*x, C):- number(C), !.
+d(-U, -DU):- d(U, DU), !.
+d(U+V, DU + DV):- d(U, DU), d(V, DV), !.
+d(U-V, DU - DV):- d(U, DU), d(V, DV), !.
+d(U*V, U*DV + V*DU):- d(U, DU), d(V, DV), !.
+d(U^N, N*U^(N1)*DU):- number(N), N1 is N-1, d(U, DU), !.
+
 
 /* Problem 7 Test: */
 
@@ -309,6 +328,8 @@ report(X, Y) :-
     write(' peg.').
 
 move(0, _, _, _) :- !.
+move(N, Src, Dest, Spare):- N>0, N1 is N-1, move(N1, Src, Spare, Dest), report(Src, Dest), move(N1, Spare, Dest, Src).
+
 
 /* Problem 9:
 The Ackermann function, named for and invented by Wilhelm Ackermann, is one of
@@ -338,6 +359,12 @@ Based on your observations, how does performance of ackmemo compare to ack?
 
 /* Problem 9a Answer: */
 
+ack(0, N, O):- O is N + 1, !.
+ack(M, 0, O):- M > 0, M1 is M - 1, ack(M1, 1, O), !.
+ack(M, N, O):- N > 0, M > 0, M1 is M - 1, N1 is N - 1, ack(M, N1, O1), ack(M1, O1 , O), !.
+
+
 /* Problem 9b Answer: */
 
 :- dynamic  lookup/3.
+ackmemo(0, N, O):- O is N + 1, assert(memo(0, N, O)).
