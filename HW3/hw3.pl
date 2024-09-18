@@ -45,6 +45,14 @@ and are not a check for 100% correctness.
 
 */
 
+/*
+Collaboration List:
+Collaborated with Xinwei on the testcases for the 8th and 9th question, and discussed about a unknown error that occured in 2nd question. 
+(cause was didn't save the file before running).
+
+
+*/
+
 /* Submission */
 
 /*
@@ -126,9 +134,9 @@ swap(leaf(X), leaf(X)).
 swap(tree(X, Y), tree(Y_, X_)):- swap(X, X_), swap(Y, Y_).
 
 /* Problem 2 Test: */
-% :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).
-% :- swap(leaf(1), leaf(1)).
-% :- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.
+ :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).
+ :- swap(leaf(1), leaf(1)).
+ :- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.
 
 /* Problem 3:
    Write a predicate sumlist(List,Sum) which succeeds if Sum is the total value
@@ -148,10 +156,10 @@ sumlist([H|T], Sum) :- sumlist(T, Sum1), Sum is Sum1 + H.
 /* There should be no warnings when compiling,
    tests which are supposed to fail are written as such */
 
-% :- sumlist([], 0).
-% :- sumlist([], 1) -> fail ; true.
-% :- sumlist([1,2,3,4], 10).
-% :- sumlist([1], 1).
+ :- sumlist([], 0).
+ :- sumlist([], 1) -> fail ; true.
+ :- sumlist([1,2,3,4], 10).
+ :- sumlist([1], 1).
 
 /* Problem 4:
    Write the predicate sumlist2(List,Sum) which succeeds if Sum is the sum total
@@ -171,10 +179,10 @@ sumlist2([H|T], Psum, Sum) :- Sum1 is Psum + H, sumlist2(T, Sum1, Sum).
 
 /* Problem 4 Test */
 
-% :- sumlist2([], 0).
-% :- sumlist2([], 1) -> fail ; true.
-% :- sumlist2([1,2,3,4], 10).
-% :- sumlist2([1], 1).
+ :- sumlist2([], 0).
+ :- sumlist2([], 1) -> fail ; true.
+ :- sumlist2([1,2,3,4], 10).
+ :- sumlist2([1], 1).
 
 /* Problem 5:
    Write the predicate sumPartialR(N, SumLst), which succeeds as follows:
@@ -198,10 +206,10 @@ sumPartialR(N, [H|T]):- N > 1, H is N*(N+1)//2, N1 is N - 1, sumPartialR(N1, T).
 
 /* Problem 5 Test */
 
-% :- sumPartialR(1, [1]).
-% :- sumPartialR(1, []) -> fail ; true.
-% :- sumPartialR(2, [3, 1]).
-% :- sumPartialR(6, [21, 15, 10, 6, 3, 1]).
+ :- sumPartialR(1, [1]).
+ :- sumPartialR(1, []) -> fail ; true.
+ :- sumPartialR(2, [3, 1]).
+ :- sumPartialR(6, [21, 15, 10, 6, 3, 1]).
 
 /* Problem 6:
    We will use a predicate edge(X,Y) to encode a graph.
@@ -234,13 +242,13 @@ outgoing(X, Y):- findall(Z, edge(X, Z), Y).
 incoming(X, Y):- findall(Z, edge(Z, X), Y).
 
 /* Problem 6 Test */
-% :- outgoing(a,X), X = [b,f,c].
-% :- outgoing(e,X), X = [].
-% :- incoming(a,X), X = [b]..
-% :- incoming(f,X), X = [a].
+ :- outgoing(a,X), X = [b,f,c].
+ :- outgoing(e,X), X = [].
+ :- incoming(a,X), X = [b]..
+ :- incoming(f,X), X = [a].
 
-% :- outgoing(e,X), X = [a] -> fail ; true.
-% :- incoming(e,X), X = [] -> fail ; true.
+ :- outgoing(e,X), X = [a] -> fail ; true.
+ :- incoming(e,X), X = [] -> fail ; true.
 
 /* Problem 7:
   A good example of symbolic computation is symbolic differentiation. Below
@@ -276,14 +284,14 @@ d(U^N, N*U^(N1)*DU):- number(N), N1 is N-1, d(U, DU), !.
 
 /* Problem 7 Test: */
 
-% :- d(x,R), R = 1 .
-% :- d(7*x,R), R = 7 .
-% :- d(x +2*(x^3 + x*x),Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
-% :- d(-(1.24*x -x^3),Result), Result = - (1.24-3*x^2*1) .
-% :- d(-(1.24*x -2*x^3),Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
+ :- d(x,R), R = 1 .
+ :- d(7*x,R), R = 7 .
+ :- d(x +2*(x^3 + x*x),Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
+ :- d(-(1.24*x -x^3),Result), Result = - (1.24-3*x^2*1) .
+ :- d(-(1.24*x -2*x^3),Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
 
 % Pay careful attention to why this fails.
-% :- d(x +2*(x^3 + x*x),Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
+ :- d(x +2*(x^3 + x*x),Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
 
 /* Problem 8:
   (Adapated from Prolog Minimanual)
