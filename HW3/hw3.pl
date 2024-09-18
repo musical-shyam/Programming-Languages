@@ -367,4 +367,10 @@ ack(M, N, O):- N > 0, M > 0, M1 is M - 1, N1 is N - 1, ack(M, N1, O1), ack(M1, O
 /* Problem 9b Answer: */
 
 :- dynamic  lookup/3.
-ackmemo(0, N, O):- O is N + 1, assert(memo(0, N, O)).
+ackmemo(M, N, O):- lookup(M, N, O), !.
+
+ackmemo(0, N, O):- O is N + 1, assert(lookup(0, N, O)), !.
+ackmemo(M, 0, O):- M > 0, M1 is M - 1, ackmemo(M1, 1, O), assert(lookup(M, 0, O)), !.
+ackmemo(M, N, O):- N > 0, M > 0, M1 is M - 1, N1 is N - 1, ack(M, N1, O1), ack(M1, O1 , O), assert(lookup(M, N, O)) , !.
+
+/* ackmemo is faster than ack especially when the numbers become bigger, as memoization helps in reducing the calculations. */
