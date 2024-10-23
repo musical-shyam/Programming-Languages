@@ -1,0 +1,281 @@
+Please submit written answers in a single text file, with the extension .txt.
+
+Some questions are adapted from Programming Language Pragmatics, by Michael L. Scott.  Scoping is covered in Chapter 3.
+You are encouraged to read Sections 3.1 to 3.5.
+
+The pseudocode in this assignment uses
+    x : integer := Y
+to denote declaring a variable x, and binding it to the value Y.
+Writing
+    x := Y
+binds an existing variable x.
+print a, b should print the value of the variables a and b separated by a comma
+
+
+Collaboration List:
+
+4th question: Discussed with Xinwei on what "the scope of a variable is the entire block in which it is declared" refers.
+
+5th question: Discussed with zhi on what the question actually means when it says same effect.
+
+6th question: Referred to a YouTube Video, on the difference between deep and shallow binding.
+
+7th question: Got Hint about what "variable is live" means from professor after class hours. and discussed with Xinwei whether examples must be of different scenarios
+
+
+
+1) Indicate the binding time for each of the following decisions in Prolog.  Explain your answers:
+
+a) The total amount of space consumed by program code and data.
+
+Ans:
+Total Space for Program code is determined at Load time. As it is only during the load time, the physical and virtual addresses are determined and size of program is assessed.
+Total Space for the Data is determined only at the Runtime. As prolog uses unification and backtracking, the actual data space used can change depending on the problem that is solved and the queries made.
+
+
+b) The ":-" total amount symbol
+
+Ans:
+The ':-' total amount symbol is part of prolog's syntax, thus they are bind during the Language design time. 
+
+c) The name "descendant", as in the descendant relation defined in the class slides.
+
+Ans:
+The "descendant" predicate is decided by the programmer to represent the family relationship between people. So it is occurs during the program writing time
+
+d) The binding of X to y, when applying the rule
+    reachable(X, Z) :- edge(X, Y), reachable(Y, Z).
+to the query:
+    ?- reachable(y, w).
+
+Ans: The Binding of X to y occurs during the run time. Unifications are performed during the run time, so binding X and y occurs during run time.
+
+
+2) Give an example of a program in a C-like pseudocode that would not work if variables were allocated statically.  Explain your answer.  Your explanation should note a specific example computation that would go wrong if variables were statically allocated. You may provide your explanations as a separate written paragraph, or as comments in the code.
+
+
+Ans: This would be a problem, especially during recursions.
+
+void count(int n){
+	int counter = n;
+	if (n>0){
+		count(n-1);
+	}
+	print(counter);
+}
+
+Lets assume that the variable counter is allocated statically. This means that every time the int fact is called it is allocated in the same memory location, making all the recursion call have the same counter. 
+So instead of printing the counts from 0 to n, The code will print 0 (n + 1) times, which makes the program invalid.
+
+
+3) Janet has written the following list manipulation library in C:
+
+    typedef struct list_node {
+        void* data;
+        struct list_node* next;
+    } list_node;
+
+    list_node* insert(void* d, list_node* L) {
+        list_node* t = (list_node*) malloc(sizeof(list_node));
+        t->data = d;
+        t->next = L;
+        return t;
+    }
+
+    list_node* reverse(list_node* L) {
+        list_node* rtn = 0;
+        while (L) {
+            rtn = insert(L->data, rtn);
+            L = L->next;
+        }
+        return rtn;
+    }
+
+    void delete_list(list_node* L) {
+        while (L) {
+            list_node* t = L;
+            L = L->next;
+            free(t->data);
+            free(t);
+        }
+    }
+
+a) New team member Brad is familiar with Java, and writes the following code in the main loop of his program:
+
+    list_node* L = 0;
+    while (more_widgets()) {
+        L = insert(next_widget(), L);
+    }
+    L = reverse(L);
+
+After running for awhile, Brad's program always runs out of memory and crashes. What incorrect expectation does Brad have? What is going wrong and causing the crash?
+
+Ans:
+This is because there is a memory leak due to non-freed memory. When he calls reverse function, the reverse returns a new linked list to L. But the old linked list is still not un-freed, because C doesn't have a garbage collector like how Java does. because of this, the program always runs out of memory and crashes
+
+
+b) Janet explains the problem to Brad, and he updates his code:
+    list_node* L = 0;
+    while (more_widgets()) {
+        L = insert(next_widget(), L);
+    }
+    T = reverse(L);
+    delete_list(L);
+    L = T;
+This solves the insufficient memory problem, but unfortunately now the program seems to produce incorrect and strangely corrupted results.  What is wrong now?
+
+Ans:
+This time the problem is that, delete function deletes the node as well as the data that the pointers inside node point to. When it is copied to T, the pointer locations are copied, not the data itself. So now that there is no data in the locations, the new L points to freed memory, which leads to segmentation faults, incorrect and corrupted results.
+
+4) Consider the following pseudocode:
+    procedure main()
+        a : integer := 1
+        b : integer := 2
+
+        procedure middle()
+            b : integer = a
+
+            procedure inner()
+                print a, b
+                a : integer := 3
+
+            inner()
+            print a, b
+
+        middle()
+        print a, b
+
+Consider each of the following scoping rules.  Indicate if the program will have static semantic errors.  If it will not, what will the program print?  Explain your answers
+
+a) C style declaration rules- names must be declared before use, and the scope of a name extends from its declaration through the end of the current block.
+
+Ans: This will not have static semantic error because a, b are already declared at the start of the main and scope exists even after the other blocks are called.
+
+The output is: (We should remember that the scope ends at the end of current block)
+1 1
+1 1
+1 2
+
+b) C# style declaration rules- names must be declared before use, and the scope of a variable is the entire block in which it is declared.
+
+Ans: This will have static semantic error. As the scope is the entire block in which it is declared, when print a, b is declared in inner(), there will be no declaration of a and b before that.
+
+c) Modula-3 - names can be declared in any order at any time, and there scope is the entire block in which they are declared.
+Ans: This will not have static semantic error. 
+
+Ans: This will not have static semantic error. As there is no declaration a inside the middle block, it takes the value of a from the main(). also as a is declared in middle(), it will take that value while printing.
+
+The output is:(3 as a is declared 3 later on in the same block. 1 because a takes the from main in middle block)
+3 1
+1 1
+1 2
+
+5) A common argument in favor of dynamic scoping is that it allows reuse and customization of subroutines.  Suppose we have a subroutine print_integer,
+which can print its input in a variety of basis (binary, decimal, hexadecimal, etc.)  Usually, we want to use decimal, and so we do not want to always
+have to specify decimal.  Instead, we want to default to decimal, and, in the rare case we want hexadecimal, we will write the following code:
+    
+    print_base : integer := 16
+    print_integer(n)
+
+The counterargument is that there are usually other ways to achieve the same effect without dynamic scoping.  Describe at least two ways without dynamic typing to be able to print integers in a variety of bases, while allowing print_integer(n) to print n in decimal notation.
+
+Ans:
+
+1st way: Defining a Default parameter inside print_integer.
+
+In print_integer(n) that takes an optional parameter that defines print_base value and has a default parameter as 10. Thus we don't need to everytime mention 10 for decimal notation.
+
+2nd way: by creating a function that changes Global variable print_base.
+
+we can create a function that changes a global variable, that by default indicates decimal, temporarily until the print_integer(n) is executed. the global variable stores the input that indicates binary, decimal, hexadecimal etc.
+
+6) 
+Consider the following pseudocode:
+
+   x : integer := 9
+   y : integer := 20
+   procedure add()
+         x := x + y
+   procedure second(P : procedure)
+         x : integer := 3
+         P()
+   procedure first()
+         y : integer := 2
+         second(add)
+
+   first()
+   print x
+
+a) What does this program print if the language uses static scoping?  Briefly explain.
+
+Ans: 
+
+If the language uses static scoping then the value printed would be 29. first() calls second() and second() calls add(), when doing addition, as it is follows static scoping, x and y values would be the global x and y, and thus global x is updated. so finally the printed value would be x + y = 9 + 20 = 29.
+
+
+b) What does this program print if the language uses dynamic scoping with deep binding?  Briefly explain.
+
+Ans:
+If the language uses dynamic scoping with deep binding, then the value printed would be 11. When add function is called, it looks at the variable bindings that were present when it was passed into second(). At that time the value of x and y were 9 and 2(inside the first()) respectively, thus the value is 9 + 2 = 11 is set to the global x (as that was the variable that was used).
+
+
+
+c) What does this program print if the language uses dynamic scoping with shallow binding?  Briefly explain.
+
+Ans:
+If the language uses dynamic scoping with deep binding, then the value printed would be 9. in shallow binding, the variables are bound when the sub-procedure is called, meaning that it has the values of local variable values in second(). so the x would be 2 + 3 = 5. but the x variable used here is the local variable inside second(), so the global variable x remains unchanged. thus the value printed is 9.
+
+7) Give three concrete example programs in three different languages of your choosing in which a variable is live but not in scope.  Briefly explain each example.
+
+Ans:
+
+C programming:
+
+#include<stdio.h>
+
+int x = 10;
+void add(){
+	int x = 20;
+	x += 5;
+	printf("%d ", x);
+}
+
+here inside the add(), the global x which has the value 10 is live but not in scope because there is another variable x inside add(). It is live because it can still be used later when it exits add().
+
+Python:
+def func():
+	x = "abc"
+	def concat():
+		print(x+x)
+		
+	return concat
+
+repeat = func()
+repeat()
+
+Here the variable x is not in scope outside func(). but it still is live till the end because x still has the possibility of being called outside because func() returns a function that uses x.
+
+Java:
+
+public class Example(){
+	
+	public static void main(String[] args){
+		List<String> arr = getArr();
+		
+		for(String msg : message){
+			System.out.println(msg);
+		}
+	}
+	
+	public static List<String> getArr(){
+		String index = "Index 0";
+		List<String> list = new ArrayList<>();
+		list.add(message);
+		return list;
+	}
+}
+
+Here the variable index does not have any scope inside the for loop. but is live there because the list is accessed there which needs this variable.
+	
+
+

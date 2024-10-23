@@ -1,0 +1,99 @@
+/*
+1) Consider the following facts, which record the animals at a (apparently small) zoo,
+and which animals a group of children most want to see.
+*/
+
+zoo_has(elephant).  
+zoo_has(penguin).
+zoo_has(lion).
+zoo_has(tiger).
+
+student_favorite(jack, lion).
+student_favorite(john, tiger).
+student_favorite(aaron, antelope).
+student_favorite(allie, elephant).
+student_favorite(hannah, giraffe).
+
+/*
+To find out if a child will be disappointed by not seeing their favorite animal, a caretaker runs the following query:
+    \+ zoo_has(Animal), student_favorite(Student, Animal).
+
+    a) What will the output of this query be?  Justify your answer.
+    (I would encourage trying to determine by hand what the output is BEFORE running the query.)
+
+    b) Write a query that will match the caretaker's intention. Justify why your query is correct.
+*/
+
+/*
+2) Indicate whether each of the following will unify or not. If unification will succeed, indicate how each variable
+   will be bound. If unification will fail, briefly (in a single phrase or sentence) explain why.
+
+    a) a = b
+    b) X + 9 = 5 + 9
+    c) X + 9 = 16
+    d) f(X, Z) = f(Y, Y)
+    e) f(X, Y, Z) = f(A, B)
+    f) [X|Y] = [A, B|Z]
+    g) [H|T] = []
+    h) [A|B] = [R]
+*/
+
+/* Try to complete 3 to 8 without relying on built-in relations.  On the test, you will be asked to write
+Prolog predicates of about this complexity- you might want to try to complete the following by hand,
+or at least without actually running/testing the predicates until you are convinced they are correct. */
+
+/* 3) my_nextto(X, Y, L) is true if X is directly before Y in list L. */
+
+% :- my_nextto(1, 2, [0, 1, 2, 3]).
+% :- my_nextto(1, 3, [0, 1, 2, 3]) -> fail ; true.
+
+/* 4) my_select(X, L1, L2) is true if removing one occurrence of X from list L1 results in list L2. */
+
+% :- my_select(4, [3, 4, 5, 4, 6], [3, 5, 4, 6]).
+% :- my_select(4, [3, 4, 5, 4, 6], [3, 4, 5, 6]).
+% :- my_select(4, [3, 4, 5, 4, 6], [3, 5, 6]) -> fail ; true.
+
+/* 5) min(N, Xs) is true if N is the smallest integer in Xs. */
+
+% :- min(0, [10, 0, 8, 9]).
+% :- min(1, [10, 0, 8, 1, 9]) -> fail ; true.
+
+/* 6) dedup(Xs, Ys) is true if all Ys is Xs, but with all neighboring duplicated items removed.
+      Hint: use cut. */
+
+% :- dedup([1, 1, 1, 4, 4, 1], [1, 4, 1]).
+% :- dedup([1, 1, 1, 4, 4, 1], [1, 1, 4, 1]) -> fail ; true.
+% :- dedup([1, 1, 1, 4, 4, 1], [1, 4]) -> fail ; true.
+
+/* 7) tails(Xs, Ys) is true if all final segments of Xs are in Ys, longest to shortest. */
+
+% :- tails([1, 2, 3, 4], [[1, 2, 3, 4], [2, 3, 4], [3, 4], [4], []]).
+% :- tails([1, 2, 3, 4], [[1, 2, 3, 4], [2, 3, 4], [3, 4], [4]]) -> fail ; true.
+% :- tails([1, 2, 3, 4], [[1, 2, 3, 4], [3, 4], [4], []]) -> fail ; true.
+
+/* 8) sumPairs(Xs, Ys, Zs) is true if the Nth element in Zs is the sum of the Nth element in Xs and the Nth element in Ys. 
+      Xs and Ys must be the same length. */
+
+% :- sumPairs([1, 2, 3], [4, 5, 6], [5, 7, 9]).
+% :- sumPairs([1, 2, 3], [4, 5, 6], [5, 7, 10]) -> fail ; true.
+% :- sumPairs([1, 2, 3], [4, 5], [5, 7]) -> fail ; true.
+
+/*
+9) We will use a constructor arrow/2 to represent a directed graph in Prolog. 
+   There is an arrow from X to Y if arrow(X, Y) holds.  Define the following relations.
+   It is ok if some relations do not terminate with false when continually prompted for more answers,
+   as long as, before not terminating, they output all correct answers.  You may rely on built-in relations.
+    
+    a) reachable(X, Y) checks if there is a sequence of arrows leading from vertex X to vertex Y.
+      A vertex is reachable from itself.  Implement this to be efficient if we are using the following query to
+      find all Y reachable from vertex v:
+                                reachable(v, Y).
+
+    b) reachable2(X, Y) checks if there is a sequence of arrows leading from vertex X to vertex Y.
+       A vertex is reachable from itself. Implement this to be efficient if we are using the following
+       query to find all X from which vertex v is reachable:
+                                                    reachable2(X, v)
+
+    c) indegree(N, X) checks if there are exactly N edges pointing to vertex X.  Hint: implement this
+       relation using one of the collection functions (findall, setof, bagof).
+*/

@@ -1,0 +1,73 @@
+Questions are adapted from Programming Language Pragmatics, by Michael L. Scott.
+
+Please submit written answers in a text file, with the extension .txt.  Please zip your text file with the modified Perl program requested by question (3b).  You do not need to submit code for any other questions.
+
+The first three questions involve C#, Ruby, and Perl.  It is possible you do not have experience with all these languages.  You are welcome (and expected) to use reference books or internet resources to figure out what you need to know about the meanings of the programs.  Keep in mind that you do not need an incredibly in-depth knowledge or understanding of any of these languages to answer these questions adequately.
+
+1) C# has sophisticated support for first-class subroutines.  It allows delegates to be instantiated from anonymous nested methods, and gives local variables and parameters unlimited extent when they are needed by such a delegate.  Consider the provided C# program, test.cs.
+
+	a) What does this program print?
+
+	b) Which of a, b, c, and d, if any, are likely to be statically allocated?  Which could be stack allocated?  Which must be allocated on the heap?  Explain.
+
+2)
+	a) Examine and run the provided Ruby program, test.rb.  What does the output suggest about the scope of nested blocks in Ruby?
+
+	b) Comment out line 2 of the program (that is, the "y = 2" line.)  Rerun the program.  Based on the output, can you make your claim about scoping from (a) more precise?
+
+3) Run the provided Perl program, test.pl.
+
+	a) What is the output?  What is (potentially) surprising about the output?
+
+	b) Modify the code to create a reference to an anonymnous local subroutine and verify that it creates closures correctly.  Submit the modify code.
+
+	c) Add the line "use diagnostics;" to the beginning of the original version of the program, and rerun the program.  Based on the explanation this will give you, speculate as to how nested named subroutines are implemented in Perl 5.
+
+
+4) Read Dijkstra's "Go to Statement Considered Harmful" and Rubin's '"GOTO Considered Harmful" Considered Harmful',
+contained in gotodebate.pdf.
+
+    a) Summarize the positions presented in both letters. What arguments or evidence do they present to support their position?
+
+    b) Which letter do you believe presents a stronger argument?  Justify your position.
+
+For those who are interested, gotodebate_extended.pdf includes further letters regarding goto sent to ACM communications-
+you are not required to read these letters.
+
+5)
+    a) The C "and" and "or" operators short circuit.  Give an example of a C program that would give a different answer if these operators did not short circuit.  Explain why the answer would be different.
+
+    b) Give an example of a C program containing some function f in which the order of evaluation of f's subroutine parameters changes the output of the program.
+    Rewrite the program to still involve a call to f, but deterministically produce one output or the other.  Do not change the definition of f.
+
+6) Loop unrolling is a code transformation that replicates the body of a loop and reduces the number of iterations, thereby decreasing the overhead of a loop.  Loop unrolling is often performed by compilers, but in timing critical situations can also be done by hand. Unfortunately, if we replicate the body of a loop k times, we must deal with the possibility that the original number of loop iterations, n, may not be a multiple of k.
+
+Consider:
+    i = 0;
+    do {
+        sum += A[i]; squares += A[i] * A[i]; i++;
+    } while (i < N)
+to unroll this loop, we may write:
+    i = 0; j = N / 4;
+    do {
+        sum += A[i]; squares += A[i] * A[i]; i++;
+        sum += A[i]; squares += A[i] * A[i]; i++;
+        sum += A[i]; squares += A[i] * A[i]; i++;
+        sum += A[i]; squares += A[i] * A[i]; i++;    
+    } while (--j > 0);
+    do {
+        sum += A[i]; squares += A[i] * A[i]; i++;
+    } while (i < N)
+
+
+In 1983, Tom Duff of LucasFilm "simplified this code" by inventing what is now known as "Duff's device":
+    i = 0; j = (N + 3) / 4;
+    switch ( N %4) {
+        case 0: do { sum += A[i]; squares += A[i] * A[i]; i++;
+        case 3:      sum += A[i]; squares += A[i] * A[i]; i++;
+        case 2:      sum += A[i]; squares += A[i] * A[i]; i++;
+        case 1:      sum += A[i]; squares += A[i] * A[i]; i++;    
+        } while (--j > 0);
+    }
+
+Briefly explain how Duff's device works.  In the above example, if N = 11, how many times will the loop iterate?  On each iteration, how many times will sum, squares, and i be modified
