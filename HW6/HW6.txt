@@ -1,0 +1,86 @@
+Some questions are adapted from Programming Language Pragmatics, by Michael L. Scott.
+
+Please submit written answers in a text file, with the extension .txt.  The solutions to (1) and (3) should be submitted as a separate files.
+
+1) Bentley [Ben, Chapter 4] provides the following informal description of a binary search:
+        We are to determine whether the sorted array X[1..N] contains the element T....  Binary search solves the problem by keeping
+        track of a range within the array in which T must be if it is anywhere in the array.  Initially, the range is the entire array.
+        The range is shrunk by comparing its middle element to T and discarding half the range.  The process continues until T is
+        discovered in the array or until the range in which it must lie is known to be empty.
+
+    Write code for binary search in an imperative programming language of your choice.  Note the name of a the language in a comment at
+    the top of the file. What loop construct(s) did you find to be useful?  Why these loop constructs, and not others?
+
+    As a side note, when Bentley asked more than a hundred professional programmers to solve this problem, Bentley found that only
+    about 10% got it right the first time, without testing.
+
+[Ben] John L. Bentley.  Programming Pearls.  Addison-Wesley Professional, 2000.  First edition, 1996
+
+2) C++ and Java loops can be written with empty bodies by placing all side effects into the tests, such as in the following two examples:
+
+Example 1:
+    int i = 0;
+    while (a[i++] != 0);
+
+Example 2:
+    int i = 0
+    for (i = 0; a[i] != 0; i++);
+
+Are these loops equivalent? Explain.
+
+3) Consider the BinTree Python class shown below.  The code below defines a preorder traversal of a binary tree, using the yield keyword.
+
+class BinTree:
+    def __init__(self):
+        self.data = self.lchild = self.rchild = None
+
+    # insert, lookup, etc.
+
+    def preorder(self):
+        if self.data != None:
+            yield self.data
+        if self.lchild != None:
+            for d in self.lchild.preorder():
+                yield d
+        if self.rchild != None:
+            for d in self.rchild.preorder():
+                yield d
+
+a) Explain the behavior of the yield keyword. Cite any sources you use.
+
+b) Write inorder and postorder iterators for BinTree, making use of the yield keyword.
+
+4) Assume the "type" keyword is used to introduce a type alias.  Consider the following:
+
+type coffee = struct { variety : string, weight : float }
+type plant = struct { variety : string, weight : float }
+type person = struct { name : string, height : float }
+
+Which of these types:
+
+coffee
+plant
+person
+array [1..10] of coffee
+array [1..10] of plant
+array [1..10] of person
+
+would a compiler likely consider to have equivalent types under
+    (a) structural equivalence?
+    (b) strict name equivalene?
+    (c) loose name equivalence?
+
+Briefly justify your answers.
+
+5) Describe the difference between type equivalence and type compatibility.
+
+6) What is type inference?  Explain three contexts in which type inference occurs?
+
+7) Show the type derivation for the following simply-typed lambda calculus expression (I am using "\" in place of lambda):
+	(\x : int . \f : (int -> int) -> int -> int . \g : int -> int . f (f g) x) 6
+As long as it is neat enough to easily read, you may submit your answer as a png or jpeg image of a handwritten derivation tree.
+
+8) What is the type of n in the following ML program? What is the type of sum?
+Write a sentence or 2 explaining how a compiler would deduce your answers to this question.
+
+let rec sum n = if n > 0 then n + sum (n - 1) else 0
