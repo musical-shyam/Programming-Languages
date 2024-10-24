@@ -4,32 +4,97 @@ Please submit written answers in a text file, with the extension .txt.  Please z
 
 The first three questions involve C#, Ruby, and Perl.  It is possible you do not have experience with all these languages.  You are welcome (and expected) to use reference books or internet resources to figure out what you need to know about the meanings of the programs.  Keep in mind that you do not need an incredibly in-depth knowledge or understanding of any of these languages to answer these questions adequately.
 
+Collaboration list:
+Q1) Executed the code in programmiz.com, 
+http://mustoverride.com/local_functions/#:~:text=lambda%20values%20have%20unbounded%20life,expressions%20cannot%20be%20declared%20recursively.
+https://www.reddit.com/r/csharp/comments/1b9wwpn/question_on_static_methods_memory_allocation/
+Discussed with Xin Wei on what how methods are allocated in C#
+
+Q2) Executed the code in onecompiler.com
+https://www.codewithjason.com/ruby-closures/
+Q3) Executed the code in onecompiler.com
+Q4) the pdf.
+
+
 1) C# has sophisticated support for first-class subroutines.  It allows delegates to be instantiated from anonymous nested methods, and gives local variables and parameters unlimited extent when they are needed by such a delegate.  Consider the provided C# program, test.cs.
 
 	a) What does this program print?
 
+    Ans: It prints 5 and 7 each in a new line.
+
 	b) Which of a, b, c, and d, if any, are likely to be statically allocated?  Which could be stack allocated?  Which must be allocated on the heap?  Explain.
+
+    Ans: 
+    a is statically allocated. In C#, static variables are allocated in static memory area. 
+    d is stack allocated, as d is a local variable inside a method and not captured by the delegate() method. In C# 
+    c is initially stack allocated but is moved into heap later. It is first stack allocated inside the b() method, but once it is captured by the delegate(lambda) method, it is moved to heap so that it is live even after b returns.  
+    b is not dynamically allocated into the memory. As it has static keyword, they are allocated statically.
 
 2)
 	a) Examine and run the provided Ruby program, test.rb.  What does the output suggest about the scope of nested blocks in Ruby?
 
+    Ans: Ruby is going to print 3 two times, each in new line. this means that proc in ruby captures and modify variables from their surrounding scope. 
+
+
 	b) Comment out line 2 of the program (that is, the "y = 2" line.)  Rerun the program.  Based on the output, can you make your claim about scoping from (a) more precise?
+
+    Ans: 3 gets printed first and then we get an undefined variable y error for the print statement that is executed in the outer block. we get 3 for x, and confirming that proc can captures and modify variables that are initiatted from the surrounding scope. But in addition to that we can also add that if variables declared inside proc is not visible outside. so y which is basically declared inside the proc does not have scope outside its block leading to the undefined variable error.
 
 3) Run the provided Perl program, test.pl.
 
 	a) What is the output?  What is (potentially) surprising about the output?
 
+    Ans: The output is 2 and 2 each in new line. Although the normal expected answer is 2 and 3, the result is different. When the subroutine bar() is called for the second call, it will see the lex's first value which was 2.
+
 	b) Modify the code to create a reference to an anonymnous local subroutine and verify that it creates closures correctly.  Submit the modify code.
+
+    Ans: Also added the modified code in test3b.pl 
+    use diagnostics;
+    sub foo {
+        my $lex = $_[0];
+        my $bar =sub{
+            print "$lex\n";
+        };
+        $bar->();
+    }
+
+    foo(2); 
+    foo(3);
 
 	c) Add the line "use diagnostics;" to the beginning of the original version of the program, and rerun the program.  Based on the explanation this will give you, speculate as to how nested named subroutines are implemented in Perl 5.
 
+    Ans: Based on the explanation given by diagnostics, we can say that the inner and outer subroutine don't share the value of $lex after the first call. This might be because of how lexical scoping works with named subroutines in perl. it remembers the first call and doesn't create a new version of the subroutine.
 
 4) Read Dijkstra's "Go to Statement Considered Harmful" and Rubin's '"GOTO Considered Harmful" Considered Harmful',
 contained in gotodebate.pdf.
 
     a) Summarize the positions presented in both letters. What arguments or evidence do they present to support their position?
 
+    Ans: 
+
+    Dijkstra argues that GOTO statement should be removed from high-level languages due its harmful effects on code clarity and understandability.
+
+    First, he points out the GOTO introduces unnecessary complexity, making it hard to trace the flow of what's happening within the program. He exclaims that that although a programmers activity ends after the correct program is constructed, the process that takes place after that should be under control of the program written by the programmer, and that this process is now left to the machine.
+
+    Second, he argues about how our human brains are better at understanding static relationships rather than dynamic processes
+
+    Third, he says that his main concern is that GOTO disrupts the natural flow of programs. He believes that programmers can reason better with structed constructs such as loops, conditionals, procedures and that goto lacks severly in this domain. he argues that goto statement is "just too primitive". To support his claim the alternatives like loops and recursive procedures are superior as they allow the program's flow to be more transparent and easier to reason about without the chaotic jumps introduced by GOTO.
+
+
+    Rubin counters Dijkstra's and says that the avoiding goto has caused more harm to the field of programming.
+
+    First, he argues that not using GOTO in programming has led to overly complicated code with programmers using workarounds such as excessive flags, nested statements, or unnecessary subroutines.
+
+    Second, he says that GOTO can actually simplify some programs, especially by reducing the code length and avoiding excessive complexity in control flow. He uses an example that prints the first all-zero row of a square matrix to support his statement.
+
+    He concludes that programmers should not avoid GOTO out of habit but should use it wisely when it improves clarity and reduces complexity.
+
+
     b) Which letter do you believe presents a stronger argument?  Justify your position.
+
+    Ans: 
+
+    I feel Dijkstra's argument more compelling. I believe that maintainability and clarity of the code are more important than a short term efficient or simplicity. If its better understandable, then even if it is long, it serves the purpose of the program. Although Rubin's arguments are also reasonable, they don't defend the fact the issues such excessive flags or nesting can often solved with other better program design instead of resorting to GOTO. 
 
 For those who are interested, gotodebate_extended.pdf includes further letters regarding goto sent to ACM communications-
 you are not required to read these letters.
@@ -37,8 +102,78 @@ you are not required to read these letters.
 5)
     a) The C "and" and "or" operators short circuit.  Give an example of a C program that would give a different answer if these operators did not short circuit.  Explain why the answer would be different.
 
+    Ans: 
+    #include <stdio.h>
+    int a(){
+        printf("Hello");
+        return 0;
+    }
+    int b(){
+        printf(" World");
+        return 1;
+    }
+    int main(){
+        if(a() && b ()){
+            printf(" wrong answer");
+        }
+        else{
+            printf(" correct answer");
+        }
+    }
+    
+    Explanation:
+    With short circuiting this program returns Hello correct answer. But without short-circuiting this program returns Hello World correct answer. 
+    This is because when short circuiting, the function b() is not executed as a() returns 0. thus the word "World" is not printed. but if there is no short circuiting, the whole condition inside the if statement is executed, leading to the word to be printed.
+
     b) Give an example of a C program containing some function f in which the order of evaluation of f's subroutine parameters changes the output of the program.
     Rewrite the program to still involve a call to f, but deterministically produce one output or the other.  Do not change the definition of f.
+
+    Ans: 
+
+    In this example, we if the order of evaluation of parameters changes, then the results would be different. If increment() is executed first, the results are a = 6 and b = 5. if its the opposite then a = 4 and b = 5. This is because the variable x is called by reference and b decrements it first before it is incremented.
+
+    #include <stdio.h>
+    int increment(int *x) {
+        (*x)++;
+        return *x;
+    }
+    int decrement(int *x) {
+        (*x)--;
+        return *x;
+    }
+    void f(int a, int b) {
+        printf("a = %d, b = %d\n", a, b);
+    }
+    int main() {
+        int x = 5;
+        f(increment(&x), decrement(&x));
+        return 0;
+    }
+
+    Rewriting the program to deterministically produce one output
+
+    #include <stdio.h>
+    int increment(int *x) {
+        (*x)++;
+        return *x;
+    }
+    int decrement(int *x) {
+        (*x)--;
+        return *x;
+    }
+    void f(int a, int b) {
+        printf("a = %d, b = %d\n", a, b);
+    }
+    int main() {
+        int x = 5;
+        int a = increment(&x);  
+        int b = decrement(&x); 
+        f(a, b);           
+        return 0;
+    }
+
+Here we are evaluated the value of increment and decrement in a fixed order before they are sent into the subroutine. the regardless of the order of the in which parameters are executed the output would be a = 6 and b = 5.
+
 
 6) Loop unrolling is a code transformation that replicates the body of a loop and reduces the number of iterations, thereby decreasing the overhead of a loop.  Loop unrolling is often performed by compilers, but in timing critical situations can also be done by hand. Unfortunately, if we replicate the body of a loop k times, we must deal with the possibility that the original number of loop iterations, n, may not be a multiple of k.
 
@@ -71,3 +206,7 @@ In 1983, Tom Duff of LucasFilm "simplified this code" by inventing what is now k
     }
 
 Briefly explain how Duff's device works.  In the above example, if N = 11, how many times will the loop iterate?  On each iteration, how many times will sum, squares, and i be modified
+
+Ans: Duff device basically combines loop unrolling with a switch statement in order handle cases where loop iterations are not a factor of k. for example in the above code, if N is divisible by 4 then it starts from the case 0 and executes all the statements inside the do-while loop, but if it gives remainder 3, it skips the first statement and starts from the second statement inside the do-while loop. similarly for remainder 2 and 1. This behavior is only for the first iteration, from the second iteration onwards it executes all the statements inside the loop. 
+
+In this example: the number of iterations = 3, on the first iteration sum, squares and i are modified 3 times and in the next 2 iterations they are modified 4 times. this is because 11 % 4 = 3, thus the switch statement starts from case 3
