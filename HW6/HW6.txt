@@ -28,6 +28,11 @@ Example 2:
 
 Are these loops equivalent? Explain.
 
+Ans:
+
+The functionalities are going to be the same (increments i) but only difference being, after exit, "i" will be 1 greater then last index value after exiting while loop. But "i" would be the last index value in for loop.
+This is mainly i++ post increment operator increments i after the check is performed. In the while loop example, the check is performrf and as i is inside the checking condition, it going to increment after that. But in the for loop example, the statements terminates before it reaches the incrementing stage. therefore the i value of example 1 is one greater than i value from example. 
+
 3) Consider the BinTree Python class shown below.  The code below defines a preorder traversal of a binary tree, using the yield keyword.
 
 class BinTree:
@@ -72,15 +77,67 @@ would a compiler likely consider to have equivalent types under
 
 Briefly justify your answers.
 
+Ans:
+
+a) Structural equivalence
+    Under structural equivalence, types are considered equivalent if they have the same structure. So coffee and plant both are structrally equivalent as they have same names and type and also in the same order.
+    Similarly array [1..10] of coffee and array [1..10] of plant going to be structurally equivalent as they have same size and equivalent types.
+
+b) Strict name equivalence
+    Under Strict name equivalence, types are considered equivalent only if they have name and alias. But as all the types here have diffent alias (as defined by type), they cannot be considered as strict name equivalent
+
+c) Loose name equivalence
+    Under Losely name equivalence, different alias is recognized equal if they have identical structures. here coffee and plant have different aliases but are considered loosely name equivalent as they have similar structure. Similarily array [1..10] of coffee and array [1..10] of plant are also loosely name equivalent as they have same size with losely equivalent types.
+
+
 5) Describe the difference between type equivalence and type compatibility.
 
+Ans:
+
+Type equivalence checks whether two types are considered same. It applies either name-based or structure based equivalent rules to check if the two types are equivalent.
+
+Whereas type compatibility is much more flexible than type equivalence. It checks if one type can be used in a context that expects a different type without strict equivalence. S and T are compatible if S and T are equivalent types or if S is a Substype of T or if one type can be coerced into another. Ex: int can be used as float, int and float are compatible.
+
 6) What is type inference?  Explain three contexts in which type inference occurs?
+
+Ans:
+
+Type inference is a set of rules that are defined to determine an expression's type based on its constituent parts or context it is being used in. It allows programmers to omit explicit type annotations by making complier infer the type of the variable/expression based on the constituents parts of the expression.
+
+It occurs in mainly three different contexts:
+1. normally arithmetic operations have the same type as its operands(after coercion). So we can infer to the type of it operands after type coercion to fix the type of the expression/variable. This also true for variable initilization, the variable type is going to be the type of the initial value that it is assigned to.
+2. the type of functions can be based on the value that is being returned by the function. so to determine a type of a function, we can look at type of the value it returns
+3. The type of the function call has the type declared in the function header. So when the function is called, it the parameters are assumed to be the type that are declared in the function header.
 
 7) Show the type derivation for the following simply-typed lambda calculus expression (I am using "\" in place of lambda):
 	(\x : int . \f : (int -> int) -> int -> int . \g : int -> int . f (f g) x) 6
 As long as it is neat enough to easily read, you may submit your answer as a png or jpeg image of a handwritten derivation tree.
 
+Ans: 
+
+x : int                 f : (int -> int) -> int -> int                                  g : int -> int
+                                                                (f(f g))x: int
+^                                                         f(f g): int-> int
+|                                                     f g: int ->int
+|                                              f (f g) x: (int->int) -> int         
+|
+|                                   \g : int -> int . f (f g) x: (int->int)
+|
+|        \f : (int -> int) -> int -> int . \g : int -> int . f (f g) x: int
+|
+(\x : int . \f : (int -> int) -> int -> int . \g : int -> int . f (f g) x: int -> int                       6
+
+        (\x : int . \f : (int -> int) -> int -> int . \g : int -> int . f (f g) x) 6: int 
+
+
+
 8) What is the type of n in the following ML program? What is the type of sum?
 Write a sentence or 2 explaining how a compiler would deduce your answers to this question.
 
 let rec sum n = if n > 0 then n + sum (n - 1) else 0
+
+Ans: 
+
+The type of n is int. n is used in expression n > 0, meaning that n must be a numberic type that supports > comparison. Additionally, in n +sum(n-1), n is used with the + operator. In ML, the > and + operators typically apply to integers, so n is of type int.
+
+The type of sum is int->int. the function sum takes an argument n(of type int) and returns an int result. also since sum is defined recursively and returns int(0) in the base case, the return type of sum is also int.
