@@ -1,0 +1,221 @@
+Some questions are adapted from Programming Language Pragmatics, by Michael L. Scott.
+
+Please submit written answers in a text file, with the extension .txt.
+
+
+Collaboration List:
+
+Class PPTs
+Programming Language Pragmatics
+
+1) Consider the below pseudocode:
+
+    int a = 0, b = 1;
+
+    def f(int x, int y) {
+        x = 4;
+        print a;
+    }
+
+    def g(int x, int y) {
+        y = 5;
+    }
+
+    f(a, b)
+    g(a, b)
+
+    print a;
+    print b;
+
+What does the program output when run with
+    a) call-by-value?
+    b) call-by-reference?
+    c) call-by-value/restore
+
+Ans:
+ 
+a) call-by-value - arguments are passed as copies
+0
+0
+1
+
+b) call-by-reference - arguments are passed by address, so the value of the global variable changes
+4
+4
+5
+
+c) call-by-value/restore - arguments are passed as copies but the changed values are then copied into the global variable, once the function completes
+0
+4
+5
+
+
+
+2) Suppose you are working in a language in which all parameters must be passed by name.  Can you
+write a subroutine swap(x, y), which swaps the values of its actual parameters?
+
+Ans: 
+call-by-name - 
+
+def swap(x, y){
+	temp = x
+	x = y
+	y = temp
+}
+
+3) Either:
+	- in pseudocode, give an example of a program which will print the same output with call-by-value and call-by-value/restore, but a different output with call-by-reference
+Or:
+	- explain why writing such a program is not possible.
+
+Ans:
+
+int a = 1;
+int b = 2;
+
+def example(int x, int y) {
+    x = x + y;
+    print a;
+}
+
+example(a, b);
+
+
+Output:
+if call by value or call-by-value/restore:
+1
+
+if call by reference
+3
+
+
+4) (a) An invariant is a property maintained by some code.  That is, it is a property that is
+    always true.  Describe (in a sentence or two) the invariant maintained by a binary search tree.
+    
+Ans:
+The invariant of Binary Search Tree is that, for any given node, every node in the left subtree is less than the value of the node itself and every node in the right subtree is greater than the value of node itself.
+
+
+    (b) Suppose you were implementing a binary search tree in C++.
+    What mechanism of object oriented programming allows you to ensure the invariant is maintained?
+    Briefly explain how you would use this mechanism when specifically implementing a binary
+    search tree. 
+
+Ans:
+To ensure that the invariant is maintained in C++, encapsulation can be used. We can declare the tree's internal data structures (the pointers and the root node data) as private so that direct access is restricted and we can use public methods like insert and remove to help modify the tree. This way we can maintain the property of the tree by restricting how modifications can be done to the binary search tree.
+
+
+5) Justify your reasoning for both (a) and (b).
+
+   (a) Give an example of a case where you would choose to derive some class B from a class A, rather than including a member field of type A in B.
+
+   (b) Give an example of a case where you would choose to include a member field of type A in class B, rather than deriving class B from class A.
+
+Ans:
+
+a) Lets take the example of class Animal and Cow
+
+class Animal{
+ public:
+	...
+};
+
+class Cow : public Animal{
+ public:
+	...
+};
+
+We see that there is a special relation (hierarchical) between Animal (class A) and Cow (Class B), as all Cows are Animal, making Animal the parent class and cow the child class. So all the functionalities from Animal is going to be needed by Cow class. 
+
+Here, If we instead use member field type of A in B, it leads to tight coupling of both the classes. This means that if Class A changes, we might need to update class B to accommodate the classes. It has creates unnecessary complexity. By using inheritance, we can reduce the code length and its complexity and also loosen the coupling between them.
+
+
+b) Lets Take the example of class Engine and Car
+
+class Engine{
+ public:
+	...
+};
+
+class Car{
+ public:
+	...
+};
+
+Here, we see that class Engine and Class Car has special relationship, but not all cars are engines, nor are engines car. meaning that not all the member field of one class are needed by the other, as it has a "has-a" relationship. it would be a waste of memory space for Car (Class B) to inherit the all the member fields of Engine (class A). Also that leads to tighter coupling as every change in the base class might affect the derived class making leading to high maintenance. So here including a member field of type A in B is much more efficient than deriving class B from A.
+
+6) Eiffel is a statically type object-oriented programming language with multiple inheritance and garbage collection.  As opposed to C++, why might destructors be:
+    (a) less necessary in Eiffel?
+    (b) less useful in Eiffel?
+
+Ans:
+a) As Eiffel has automatic garbage collection, the system automatically cleans memory that is no longer in use. Also, as multiple inheritance is already handled by the class, we won't have any problem when there are repeated inheritance involved. Thus we don't have a need for explicit destructors.
+
+b) First of all the language itself is structured in a way that destructors are less useful (we have garbage collection and multi-inheritance is handled). So as compared to C++ where destructor plays a very important role, in Eiffel doesn't need them that much. Also the Language is much simpler when compared to Eiffel, as we don't have virtual functions that are used to handle multiple inheritance, reducing the usage of destructor. 
+
+
+7) Python does not allow classes to have private fields.
+
+    a) We discussed three major features of objected-oriented languages: encapsulation, inheritance, and  dynamic method binding.  Which of these three features is most directly impacted by this limitation of Python?  Briefly explain your answer.
+
+Ans: Mostly directly impacted feature is Encapsulation. As there are no private fields, all the attributes inside a class are accessible outside the class, even if they are intended only for the internal use. This makes it difficult to enforce encapsulation because there is no in built mechanism to prevent external code from accessing or modifying the members fields inside the class.
+
+    b) Provide an argument that Python/Python programmers would benefit from private class fields being added to the language.
+
+Ans: First it helps us enforce encapsulation and hiding data from external code, thus resulting in stronger control over Access. It  helps in maintaining the invariant of the class and also enhances the code reliability by preventing accidental modifications.
+
+
+8) Consider the following program:
+
+    class Animal { make_sound() { print("running"); } }
+
+    class Cow : public Animal { make_sound() { print("moo"); } }
+
+    class Duck : public Animal { make_sound() { print("quack"); } }
+
+    void main() {
+        Cow c;
+        Duck d;
+
+        Animal* a1 = &c;
+        Animal* a2 = &d;
+
+        c.make_sound();
+        d.make_sound();
+
+        a1->make_sound();
+        a2->make_sound();
+    }
+
+    What will be printed if using
+
+    a) static method binding?
+
+Ans:
+moo
+quack
+running
+running
+
+    b) dynamic method binding?
+
+Ans:
+moo 
+quack
+moo 
+quack
+
+    c) If we wanted to add a "number_of_feet" field to animal, and ensure that it could not be incorrectly modified by a user of the Animal class, would it make sense to have the field be public, private, or protected?  Why?
+
+Ans:
+
+Protected would make more sense. The subclasses cow and duck should be able to access number of feet field because, feets are characteristic that are also common in ducks and cows. Protected access modifier helps us to make sure that only the subclasses can access this field, and no other external code can access it.
+
+
+
+
+
+
+
+
+

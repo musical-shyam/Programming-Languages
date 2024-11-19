@@ -1,0 +1,41 @@
+# Referred https://www.geeksforgeeks.org/python-yield-keyword/
+# a) yield is used to create generator object and return it to where it has been called.
+# in this example, yield acts just like a lazy return function.
+# while return function terminates the further execution of the function, yield only pauses the execution of the function after the yield keyword. 
+# also return statement are never executed, whereas a yield statement is executed when function resumes its execution
+
+class BinTree:
+    def __init__(self):
+        self.data = self.lchild = self.rchild = None
+
+    # insert, lookup, etc.
+
+    def preorder(self):
+        if self.data != None:
+            yield self.data
+        if self.lchild != None:
+            for d in self.lchild.preorder():
+                yield d
+        if self.rchild != None:
+            for d in self.rchild.preorder():
+                yield d
+    
+    def postorder(self):
+        if self.lchild is not None:
+            for d in self.lchild.postorder():
+                yield d
+        if self.rchild is not None:
+            for d in self.rchild.postorder():
+                yield d
+        if self.data is not None:
+            yield self.data
+
+    def inorder(self):
+        if self.lchild is not None:
+            for d in self.lchild.inorder():
+                yield d
+        if self.data is not None:
+            yield self.data
+        if self.rchild is not None:
+            for d in self.rchild.inorder():
+                yield d
