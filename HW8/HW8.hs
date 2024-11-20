@@ -43,6 +43,10 @@ Example:
 56
 -}
 
+prodAll :: [Int] -> Int
+prodAll = foldl (*) 1
+
+
 {-
 Problem 2:
 
@@ -59,11 +63,30 @@ Notice how in the above example, the output of composeList [ (-) 3, (*) 2, (+) 5
 is the function f(x) = (3 - (2 * (5 + x))).
 -}
 
+composeList :: [a -> a] -> (a -> a)
+composeList [] = id
+composeList (f:fs) = f . composeList fs
+
+{-      We can also use composeList = foldr (.) id here.    -}
+
 {- Problem 3:
 
 Write a function iterate that takes a function (f :: a -> a) and a value (x :: a), and returns an infinite list of repeated applications of f to x
 
 iterate f x == [x, f x, f (f x), f (f (f x)), ...]
+-}
+
+iterate :: (a -> a) -> a -> [a]
+iterate f x = x : iterate f (f x)
+
+{-
+Test case
+
+let f x = 5 * x
+iterate f 5
+
+<infinite loop>
+
 -}
 
 {- Problem 4:
@@ -80,13 +103,26 @@ False
 False
 -}
 
+isSubsequenceOf :: Eq a => [a] ->[a] -> Bool
+isSubsequenceOf [] _ = True
+isSubsequenceOf _ [] = False
+isSubsequenceOf (x:xs) (y:ys)
+    | x == y = isSubsequenceOf xs ys
+    | otherwise = isSubsequenceOf (x:xs) ys
+
 {-
 Problem 5:
 a) What would be a more logical name for the function f, defined below?  
 
+Ans: It would be more logical to call it reverse function. the recursion statement here basically adds the first element of the array to the end of the list, and this continues until there is no element left inside the list, meaning that the whole array has been reversed.
+
 b) What is the computational complexity of f, in terms of the length of the input list?
 (++) is defined as part of the Haskell standard library, which is also called the "Prelude".
 Assume its implementation is the same as was presented in class.
+
+Ans: The computational capcity of f would be O(n^2), where n is the length of the input list. At each recursive call the ++ operator appends the head to the reversed rest of the list and also ++ takes time propotional to the length of its xs to append the head (as it is has to traverse the entire xs to append the head to the end). the total computation time would be 1 + 2 + 3 + ... + n = n(n+1)/2 time = (O(n^2)).
+
+
 -}
 
 f :: [a] -> [a]
@@ -103,8 +139,23 @@ You may add typeclass requirements to inside's type signature, but do not change
 
 data Point a = Point a a deriving Show
 
-inside :: a -> Point a -> Point a -> Bool
-inside radius point1 point2 = error "define"
+inside :: (Floating a, Ord a) => a -> Point a -> Point a -> Bool
+inside radius point1 point2 = 
+    let (Point x1 y1) = point1
+        (Point x2 y2) = point2
+        distancesq = (x2 -x1)^2 + (y2 - y1)^2
+    in distancesq <= radius ^ 2
+
+{-
+Test case
+
+inside 5 (Point 0 0) (Point 1 2)
+True
+
+inside 5 (Point 10 0) (Point 1 5)
+False
+
+-}
 
 {- Problem 7:
 
@@ -122,3 +173,12 @@ A & y = y
 (#) :: AB -> AB -> AB
 A # y = y
 (B x) # y = x # B y
+
+{-
+
+No, we cannot replace the occurence of & with # or vice versa because both have different recursion step. 
+
+& combines arguments by appending the second argument to the first argument while preserving the structure of the first argument. Whereas # combines both the arguments but reorders elements during recursion, thus changing the arguments positions for next recursive step.
+
+So we would notice different behavior if we interchange & and #.
+-}
